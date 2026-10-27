@@ -29,16 +29,28 @@ func init() {
 	loraLRFHSSID, _ := loRaLRFHSSH.ID()
 	loraLRFHSSName, _ := loRaLRFHSSH.Name()
 
+	maxTXPowerH := &MaxTXPowerHandler{}
+	maxTXPowerID, _ := maxTXPowerH.ID()
+	maxTXPowerName, _ := maxTXPowerH.Name()
+
+	conservativeH := &ConservativeHandler{}
+	conservativeID, _ := conservativeH.ID()
+	conservativeName, _ := conservativeH.Name()
+
 	handlers = map[string]adr.Handler{
-		defID:        defH,
-		loraLRFHSSID: loRaLRFHSSH,
-		lrFHSSID:     lrFHSSH,
+		defID:          defH,
+		loraLRFHSSID:   loRaLRFHSSH,
+		lrFHSSID:       lrFHSSH,
+		maxTXPowerID:   maxTXPowerH,
+		conservativeID: conservativeH,
 	}
 
 	handlerNames = map[string]string{
-		defID:        defName,
-		loraLRFHSSID: loraLRFHSSName,
-		lrFHSSID:     lrFHSSName,
+		defID:          defName,
+		loraLRFHSSID:   loraLRFHSSName,
+		lrFHSSID:       lrFHSSName,
+		maxTXPowerID:   maxTXPowerName,
+		conservativeID: conservativeName,
 	}
 }
 
