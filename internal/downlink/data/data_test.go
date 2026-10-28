@@ -583,6 +583,93 @@ func (ts *SetMACCommandsSetTestSuite) TestSetMACCommandsSet() {
 			},
 		},
 		{
+			Name: "trigger adr request change, max_tx_power algorithm + MinSupportedTXPowerIndex",
+			DataContext: dataContext{
+				ServiceProfile: storage.ServiceProfile{
+					DRMax: 5,
+				},
+				DeviceProfile: storage.DeviceProfile{
+					ADRAlgorithmID: "max_tx_power",
+				},
+				DeviceSession: storage.DeviceSession{
+					ADR:          true,
+					DR:           0,
+					TXPowerIndex: 3,
+					UplinkHistory: []storage.UplinkHistory{
+						{FCnt: 0, MaxSNR: 5, TXPowerIndex: 3, GatewayCount: 1},
+					},
+					RX2Frequency:             869525000,
+					MinSupportedTXPowerIndex: 1,
+				},
+				DownlinkFrameItems: []downlinkFrameItem{
+					{
+						RemainingPayloadSize: 200,
+					},
+				},
+			},
+			ExpectedMACCommands: []storage.MACCommandBlock{
+				{
+					CID: lorawan.LinkADRReq,
+					MACCommands: storage.MACCommands{
+						{
+							CID: lorawan.LinkADRReq,
+							Payload: &lorawan.LinkADRReqPayload{
+								DataRate: 5,
+								TXPower:  1,
+								ChMask:   [16]bool{true, true, true},
+								Redundancy: lorawan.Redundancy{
+									NbRep: 1,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			Name: "trigger adr request change, conservative algorithm restores max tx-power",
+			DataContext: dataContext{
+				ServiceProfile: storage.ServiceProfile{
+					DRMax: 5,
+				},
+				DeviceProfile: storage.DeviceProfile{
+					ADRAlgorithmID: "conservative",
+				},
+				DeviceSession: storage.DeviceSession{
+					ADR:          true,
+					DR:           0,
+					TXPowerIndex: 5,
+					UplinkHistory: []storage.UplinkHistory{
+						{FCnt: 0, MaxSNR: 5, TXPowerIndex: 5, GatewayCount: 1},
+					},
+					RX2Frequency: 869525000,
+				},
+				DownlinkFrameItems: []downlinkFrameItem{
+					{
+						RemainingPayloadSize: 200,
+					},
+				},
+			},
+			ExpectedMACCommands: []storage.MACCommandBlock{
+				{
+					CID: lorawan.LinkADRReq,
+					MACCommands: storage.MACCommands{
+						{
+							CID: lorawan.LinkADRReq,
+							Payload: &lorawan.LinkADRReqPayload{
+								DataRate: 0,
+								TXPower:  0,
+								ChMask:   [16]bool{true, true, true},
+								Redundancy: lorawan.Redundancy{
+									NbRep: 1,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
 			Name: "request device-status",
 			DataContext: dataContext{
 				ServiceProfile: storage.ServiceProfile{

@@ -1185,6 +1185,13 @@ func requestADRChange(ctx *dataContext) error {
 		return errors.Wrap(err, "handle adr error")
 	}
 
+	// Devices that nACKed TXPower 0 (see maccommand.handleLinkADRAns) would
+	// otherwise get a LinkADRReq on every uplink now that the default handler
+	// always requests max TX power.
+	if handleResp.TxPowerIndex < ctx.DeviceSession.MinSupportedTXPowerIndex {
+		handleResp.TxPowerIndex = ctx.DeviceSession.MinSupportedTXPowerIndex
+	}
+
 	// The response values are different than the request values, thus we must
 	// send a LinkADRReq to the device.
 	if handleResp.DR != handleReq.DR || handleResp.TxPowerIndex != handleReq.TxPowerIndex || handleResp.NbTrans != handleReq.NbTrans {

@@ -1094,6 +1094,10 @@ func (ts *NetworkServerAPITestSuite) TestADR() {
 		assert.Equal(&ns.GetADRAlgorithmsResponse{
 			AdrAlgorithms: []*ns.ADRAlgorithm{
 				{
+					Id:   "conservative",
+					Name: "Worst-SNR ADR algorithm, lowers TX power only with proven margin (Sensorico)",
+				},
+				{
 					Id:   "default",
 					Name: "Default ADR algorithm (LoRa only)",
 				},
@@ -1104,6 +1108,10 @@ func (ts *NetworkServerAPITestSuite) TestADR() {
 				{
 					Id:   "lr_fhss",
 					Name: "LR-FHSS only ADR algorithm",
+				},
+				{
+					Id:   "max_tx_power",
+					Name: "Default ADR algorithm, always max TX power (Sensorico)",
 				},
 			},
 		}, resp)
